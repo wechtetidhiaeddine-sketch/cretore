@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Movie Search</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: url("https://wallpapercave.com/wp/wp1945897.jpg") no-repeat center/cover;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.box {
+  background: rgba(0,0,0,0.8);
+  padding: 25px;
+  border-radius: 15px;
+  width: 360px;
+  text-align: center;
+  color: white;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  margin-top: 10px;
+}
+
+.results {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.card {
+  background: rgba(255,255,255,0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  font-size: 13px;
+}
+
+.card img {
+  width: 100%;
+  height: 160px;
+  object-fit: cover;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+  <h2>🎬 Movie App</h2>
+  <input type="text" placeholder="اكتب اسم فيلم واضغط Enter">
+  <div id="results" class="results"></div>
+</div>
+
+<script>
+const API_KEY = "YOUR_API_KEY_HERE";
+const input = document.querySelector("input");
+const results = document.getElementById("results");
+
+input.addEventListener("keydown", async (e) => {
+  if (e.key === "Enter") {
+    const query = input.value.trim();
+    if (!query) return;
+
+    results.innerHTML = "⏳ جاري البحث...";
+
+    const url = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${query}`;
+
+    const res = await fetch(url);
+    const data = await res.json();
+
+    results.innerHTML = "";
+
+    data.results.slice(0, 6).forEach(movie => {
+      if (!movie.poster_path) return;
+
+      const card = document.createElement("div");
+      card.className = "card";
+
+      card.innerHTML = `
+        <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}">
+        <p>${movie.title}</p>
+      `;
+
+      results.appendChild(card);
+    });
+  }
+});
+</script>
+
+</body>
+</html>
