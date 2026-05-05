@@ -3,64 +3,96 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🎬 Movie YouTube Search</title>
+<title>🎬 Movie Pro YouTube</title>
 
 <style>
 body {
   margin: 0;
   font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(-45deg, #141e30, #243b55, #0f2027, #2c5364);
-  background-size: 400% 400%;
-  animation: bgMove 10s infinite alternate;
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
+
+  /* خلفية أفلام */
+  background: url("https://images.unsplash.com/photo-1489599849927-2ee91cede3ba") no-repeat center/cover;
 }
 
-@keyframes bgMove {
-  0% {background-position: left;}
-  100% {background-position: right;}
+/* overlay باش النص يبان */
+body::before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to top, rgba(0,0,0,0.9), rgba(0,0,0,0.5));
+  backdrop-filter: blur(3px);
+  z-index: 0;
 }
 
+/* الصندوق */
 .box {
-  backdrop-filter: blur(15px);
+  position: relative;
+  z-index: 1;
+  backdrop-filter: blur(20px);
   background: rgba(255,255,255,0.08);
-  padding: 25px;
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: 30px;
   border-radius: 20px;
-  width: 350px;
+  width: 360px;
   text-align: center;
   color: white;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.7);
+  animation: fadeIn 1s ease;
 }
 
+@keyframes fadeIn {
+  from {opacity: 0; transform: translateY(20px);}
+  to {opacity: 1; transform: translateY(0);}
+}
+
+h2 {
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+/* input */
 input {
   width: 100%;
   padding: 12px;
-  border-radius: 10px;
+  border-radius: 12px;
   border: none;
   margin-top: 10px;
   outline: none;
+  background: rgba(255,255,255,0.1);
+  color: white;
 }
 
+input::placeholder {
+  color: #ccc;
+}
+
+/* النتيجة */
 .result {
   margin-top: 20px;
 }
 
+/* زر */
 .btn {
   margin-top: 15px;
-  padding: 10px;
+  padding: 12px;
   border: none;
-  border-radius: 10px;
-  background: red;
+  border-radius: 12px;
+  background: linear-gradient(45deg, red, #ff4b2b);
   color: white;
   cursor: pointer;
   font-weight: bold;
   transition: 0.3s;
+  width: 100%;
 }
 
 .btn:hover {
-  background: darkred;
-  transform: scale(1.05);
+  transform: scale(1.07);
+  box-shadow: 0 5px 20px rgba(255,0,0,0.6);
 }
 </style>
 </head>
@@ -68,7 +100,7 @@ input {
 <body>
 
 <div class="box">
-  <h2>🎬 Movie → YouTube</h2>
+  <h2>🎬 Movie Search</h2>
   <input type="text" id="search" placeholder="اكتب اسم فيلم واضغط Enter">
   
   <div class="result" id="result"></div>
@@ -83,20 +115,17 @@ input.addEventListener("keydown", (e) => {
     const query = input.value.trim();
     if (!query) return;
 
-    // رابط البحث في يوتيوب
     const youtubeURL = `https://www.youtube.com/results?search_query=${encodeURIComponent(query + " trailer")}`;
 
     result.innerHTML = `
-      <p>🎬 ${query}</p>
-      <button class="btn" onclick="goToYoutube()">▶ مشاهدة في YouTube</button>
+      <p style="font-size:18px;">🎬 ${query}</p>
+      <button class="btn" onclick="goToYoutube()">▶ مشاهدة التريلر</button>
     `;
 
-    // نخزن الرابط
     window.currentURL = youtubeURL;
   }
 });
 
-// function تمشي لليوتيوب
 function goToYoutube() {
   window.open(window.currentURL, "_blank");
 }
