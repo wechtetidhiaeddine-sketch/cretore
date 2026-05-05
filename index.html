@@ -2,54 +2,65 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Movie Search</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎬 Movie YouTube Search</title>
 
 <style>
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background: url("https://wallpapercave.com/wp/wp1945897.jpg") no-repeat center/cover;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(-45deg, #141e30, #243b55, #0f2027, #2c5364);
+  background-size: 400% 400%;
+  animation: bgMove 10s infinite alternate;
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
+@keyframes bgMove {
+  0% {background-position: left;}
+  100% {background-position: right;}
+}
+
 .box {
-  background: rgba(0,0,0,0.8);
+  backdrop-filter: blur(15px);
+  background: rgba(255,255,255,0.08);
   padding: 25px;
-  border-radius: 15px;
-  width: 360px;
+  border-radius: 20px;
+  width: 350px;
   text-align: center;
   color: white;
 }
 
 input {
   width: 100%;
-  padding: 10px;
-  border-radius: 8px;
+  padding: 12px;
+  border-radius: 10px;
   border: none;
   margin-top: 10px;
+  outline: none;
 }
 
-.results {
+.result {
   margin-top: 20px;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
 }
 
-.card {
-  background: rgba(255,255,255,0.1);
+.btn {
+  margin-top: 15px;
+  padding: 10px;
+  border: none;
   border-radius: 10px;
-  overflow: hidden;
-  font-size: 13px;
+  background: red;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.3s;
 }
 
-.card img {
-  width: 100%;
-  height: 160px;
-  object-fit: cover;
+.btn:hover {
+  background: darkred;
+  transform: scale(1.05);
 }
 </style>
 </head>
@@ -57,45 +68,38 @@ input {
 <body>
 
 <div class="box">
-  <h2>🎬 Movie App</h2>
-  <input type="text" placeholder="اكتب اسم فيلم واضغط Enter">
-  <div id="results" class="results"></div>
+  <h2>🎬 Movie → YouTube</h2>
+  <input type="text" id="search" placeholder="اكتب اسم فيلم واضغط Enter">
+  
+  <div class="result" id="result"></div>
 </div>
 
 <script>
-const API_KEY = "YOUR_API_KEY_HERE";
-const input = document.querySelector("input");
-const results = document.getElementById("results");
+const input = document.getElementById("search");
+const result = document.getElementById("result");
 
-input.addEventListener("keydown", async (e) => {
+input.addEventListener("keydown", (e) => {
   if (e.key === "Enter") {
     const query = input.value.trim();
     if (!query) return;
 
-    results.innerHTML = "⏳ جاري البحث...";
+    // رابط البحث في يوتيوب
+    const youtubeURL = `https://www.youtube.com/results?search_query=${encodeURIComponent(query + " trailer")}`;
 
-    const url = `https://api.themoviedb.org/3/search/movie?api_key=${API_KEY}&query=${query}`;
+    result.innerHTML = `
+      <p>🎬 ${query}</p>
+      <button class="btn" onclick="goToYoutube()">▶ مشاهدة في YouTube</button>
+    `;
 
-    const res = await fetch(url);
-    const data = await res.json();
-
-    results.innerHTML = "";
-
-    data.results.slice(0, 6).forEach(movie => {
-      if (!movie.poster_path) return;
-
-      const card = document.createElement("div");
-      card.className = "card";
-
-      card.innerHTML = `
-        <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}">
-        <p>${movie.title}</p>
-      `;
-
-      results.appendChild(card);
-    });
+    // نخزن الرابط
+    window.currentURL = youtubeURL;
   }
 });
+
+// function تمشي لليوتيوب
+function goToYoutube() {
+  window.open(window.currentURL, "_blank");
+}
 </script>
 
 </body>
